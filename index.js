@@ -18,8 +18,8 @@ console.log(battleZonesMap)
 
 const boundaries = []
 const offset = {
-    x: -735,
-    y: -650
+    x: -695,
+    y: -200
 }
 
 collisionsMap.forEach((row, i) => {
@@ -80,7 +80,8 @@ const player = new Sprite({
     },
     image: playerDownImage,
     frames: {
-        max: 4
+        max: 4,
+        hold: 10
     },
     sprites: {
         up: playerUpImage,
@@ -208,7 +209,7 @@ function animate() {
     }
 
     if (keys.w.pressed && lastKey === 'w') { 
-        player.moving = true
+        player.animate = true
         player.image = player.sprites.up
         for (let i = 0; i < boundaries.length; i++) {
             const boundary = boundaries[i]
@@ -229,7 +230,7 @@ function animate() {
             movable.position.y += 3
         })
     } else if (keys.a.pressed && lastKey ===  'a') {
-        player.moving = true
+        player.animate = true
         player.image = player.sprites.left
         for (let i = 0; i < boundaries.length; i++) {
             const boundary = boundaries[i]
@@ -293,7 +294,7 @@ function animate() {
         })
     }
 }
-animate()
+//animate()
 
 const battleBackgroundImage = new Image()
 battleBackgroundImage.src = './My Game Assets/battleBackground.png'
@@ -303,10 +304,46 @@ const battleBackground = new Sprite({position: {
 },
 image: battleBackgroundImage
 })
+
+const greenCatImage = new Image()
+greenCatImage.src = './My Game Assets/greenCat.png'
+const greenCat = new Sprite({
+    position: {
+        x: 680,
+        y: 230
+    },
+    image: greenCatImage,
+    frames: {
+        max: 4,
+        hold: 30
+    },
+    animate: true
+})
+
+const peachCatImage = new Image()
+peachCatImage.src = './My Game Assets/peachCat.png'
+const peachCat = new Sprite({
+    position: {
+        x: 300,
+        y: 380
+    },
+    image: peachCatImage,
+    frames: {
+        max: 4,
+        hold: 30
+    },
+    animate: true
+})
+
 function animateBattle() {
     window.requestAnimationFrame(animateBattle)
     battleBackground.draw()
+    greenCat.draw()
+    peachCat.draw()
 }
+
+//animate()
+animateBattle()
 
 let lastKey = ''
 
