@@ -318,7 +318,8 @@ const greenCat = new Sprite({
         hold: 30
     },
     animate: true,
-    isEnemy: true
+    isEnemy: true,
+    name: 'Mochi'
 })
 
 const peachCatImage = new Image()
@@ -333,32 +334,35 @@ const peachCat = new Sprite({
         max: 4,
         hold: 30
     },
-    animate: true
+    animate: true,
+    isEnemy: true,
+    name: 'Peaches'
 })
 
+const renderedSprites = [greenCat, peachCat]
 function animateBattle() {
     window.requestAnimationFrame(animateBattle)
     battleBackground.draw()
-    greenCat.draw()
-    peachCat.draw()
+
+    renderedSprites.forEach((sprite) => {
+        sprite.draw()
+    })
 }
 
 //animate()
 animateBattle()
 
-document.querySelectorAll('button').forEach(button => {
+document.querySelectorAll('button').forEach((button) => {
     button.addEventListener('click', (e) => {
         const selectedAttack = attacks[e.currentTarget.innerHTML]
         peachCat.attack({
             attack: selectedAttack,
-            recipient: greenCat
+            recipient: greenCat,
+            renderedSprites
         })
     })
 });
 
-window.addEventListener('click', () => {
-    
-})
 
 let lastKey = ''
 

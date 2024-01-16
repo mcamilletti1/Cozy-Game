@@ -4,7 +4,7 @@ const attacks = {
         damage: 10,
         type: 'Normal'
     },
-    Fireball: {
+    Hairball: {
         name: 'Hairball',
         damage: 25,
         type: 'Charged'
