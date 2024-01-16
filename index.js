@@ -317,7 +317,8 @@ const greenCat = new Sprite({
         max: 4,
         hold: 30
     },
-    animate: true
+    animate: true,
+    isEnemy: true
 })
 
 const peachCatImage = new Image()
@@ -344,6 +345,20 @@ function animateBattle() {
 
 //animate()
 animateBattle()
+
+document.querySelectorAll('button').forEach(button => {
+    button.addEventListener('click', (e) => {
+        const selectedAttack = attacks[e.currentTarget.innerHTML]
+        peachCat.attack({
+            attack: selectedAttack,
+            recipient: greenCat
+        })
+    })
+});
+
+window.addEventListener('click', () => {
+    
+})
 
 let lastKey = ''
 
