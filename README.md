@@ -1,7 +1,5 @@
 # Cat Island - A Cozy Cat Battling Game
 
-![Cat Island Logo](cat_island_logo.png)
-
 Welcome to Cat Island, a cozy and delightful game where you can embark on an adventure filled with cute and fierce battles between adorable cats! Cat Island is a JavaScript game built using HTML canvas, and its charming game world was meticulously crafted using the Tiled map editor. Get ready to explore, collect, and train your feline companions as you navigate this enchanting island.
 
 ## Table of Contents
