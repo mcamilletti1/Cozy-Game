@@ -1,4 +1,3 @@
-
 const battleBackgroundImage = new Image()
 battleBackgroundImage.src = './My Game Assets/battleBackground.png'
 const battleBackground = new Sprite({position: {
@@ -8,44 +7,84 @@ const battleBackground = new Sprite({position: {
 image: battleBackgroundImage
 })
 
-const greenCatImage = new Image()
-greenCatImage.src = './My Game Assets/greenCat.png'
-const greenCat = new Sprite({
-    position: {
-        x: 680,
-        y: 230
-    },
-    image: greenCatImage,
-    frames: {
-        max: 4,
-        hold: 30
-    },
-    animate: true,
-    isEnemy: true,
-    name: 'Mochi'
-})
+let greenCat
+let peachCat
+let renderedSprites
+let battleAnimationId
+let queue
 
-const peachCatImage = new Image()
-peachCatImage.src = './My Game Assets/peachCat.png'
-const peachCat = new Sprite({
-    position: {
-        x: 300,
-        y: 380
-    },
-    image: peachCatImage,
-    frames: {
-        max: 4,
-        hold: 30
-    },
-    animate: true,
-    isEnemy: true,
-    name: 'Peaches'
-})
+function initBattle() {
+    document.querySelector('#userInterface').style.display = 'block'
+    document.querySelector('#userInterface').style.display = 'block'
+    greenCat = new Monster(monsters.greenCat)
+    peachCat = new Monster(monsters.peachCat)
+    renderedSprites = [greenCat, peachCat]
+    queue = []
 
-const renderedSprites = [greenCat, peachCat]
+    peachCat.attacks.forEach((attack) => {
+        const button = document.createElement('button')
+        button.innerHTML = attack.name
+        document.querySelector('#attacksBox').append(button)
+    })
+
+    document.querySelectorAll('button').forEach((button) => {
+        button.addEventListener('click', (e) => {
+            const selectedAttack = attacks[e.currentTarget.innerHTML]
+            peachCat.attack({
+                attack: selectedAttack,
+                recipient: greenCat,
+                renderedSprites
+            })
+    
+            if (greenCat.health <= 0) {
+                queue.push(() => {
+                    greenCat.faint()
+                })
+                queue.push(() => {
+                    gsap.to('#overlappingDiv', {
+                       opacity: 1,
+                       onComplete: () => {
+                        cancelAnimationFrame(battleAnimationId)
+                        animate()
+                        document.querySelector('#userInterface').style.display = 'none'
+                        gsap.to('#overlappingDiv', {
+                           opacity: 0
+                        })
+                       }
+                    })
+                })
+            }
+    
+            const randomAttack = greenCat.attacks[Math.floor(Math.random() * greenCat.attacks.length)]
+    
+            queue.push(() => {
+                greenCat.attack({
+                    attack: randomAttack,
+                    recipient: peachCat,
+                    renderedSprites
+                })
+    
+                if (peachCat.health <= 0) {
+                    queue.push(() => {
+                        peachCat.faint()
+                    })
+                }
+            })
+        })
+    
+        button.addEventListener('mouseenter', (e) => {
+            const selectedAttack = attacks[e.currentTarget.innerHTML]
+            document.querySelector('#attackType').innerHTML = selectedAttack.type
+            document.querySelector('#attackType').style.color = selectedAttack.color
+        })
+    })
+}
+
 function animateBattle() {
-    window.requestAnimationFrame(animateBattle)
+    battleAnimationId = window.requestAnimationFrame(animateBattle)
     battleBackground.draw()
+
+    console.log(battleAnimationId);
 
     renderedSprites.forEach((sprite) => {
         sprite.draw()
@@ -53,15 +92,12 @@ function animateBattle() {
 }
 
 //animate()
+initBattle()
 animateBattle()
 
-document.querySelectorAll('button').forEach((button) => {
-    button.addEventListener('click', (e) => {
-        const selectedAttack = attacks[e.currentTarget.innerHTML]
-        peachCat.attack({
-            attack: selectedAttack,
-            recipient: greenCat,
-            renderedSprites
-        })
-    })
-});
+document.querySelector('#dialogueBox').addEventListener('click', (e) => {
+    if (queue.length > 0) {
+       queue[0]() 
+       queue.shift()
+    } else e.currentTarget.style.display = 'none'
+})
