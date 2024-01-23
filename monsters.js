@@ -1,16 +1,12 @@
-const peachCatImage = new Image()
-peachCatImage.src = './My Game Assets/peachCat.png'
-
-const greenCatImage = new Image()
-greenCatImage.src = './My Game Assets/greenCat.png'
-
 const monsters = {
     peachCat: {
         position: {
             x: 300,
             y: 380
         },
-        image: peachCatImage,
+        image: {
+            src: './My Game Assets/peachCat.png'
+        },
         frames: {
             max: 4,
             hold: 30
@@ -24,7 +20,9 @@ const monsters = {
             x: 680,
             y: 230
         },
-        image: greenCatImage,
+        image: {
+            src: './My Game Assets/greenCat.png'
+        },
         frames: {
             max: 4,
             hold: 30

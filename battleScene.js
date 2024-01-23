@@ -15,7 +15,11 @@ let queue
 
 function initBattle() {
     document.querySelector('#userInterface').style.display = 'block'
-    document.querySelector('#userInterface').style.display = 'block'
+    document.querySelector('#dialogueBox').style.display = 'none'
+    document.querySelector('#enemyHealthBar').style.width = '100%'
+    document.querySelector('#playerHealthBar').style.width = '100%'
+    document.querySelector('#attacksBox').replaceChildren()
+
     greenCat = new Monster(monsters.greenCat)
     peachCat = new Monster(monsters.peachCat)
     renderedSprites = [greenCat, peachCat]
@@ -50,6 +54,8 @@ function initBattle() {
                         gsap.to('#overlappingDiv', {
                            opacity: 0
                         })
+
+                        battle.initiated = false
                        }
                     })
                 })
@@ -67,6 +73,22 @@ function initBattle() {
                 if (peachCat.health <= 0) {
                     queue.push(() => {
                         peachCat.faint()
+                    })
+
+                    queue.push(() => {
+                        gsap.to('#overlappingDiv', {
+                           opacity: 1,
+                           onComplete: () => {
+                            cancelAnimationFrame(battleAnimationId)
+                            animate()
+                            document.querySelector('#userInterface').style.display = 'none'
+                            gsap.to('#overlappingDiv', {
+                               opacity: 0
+                            })
+
+                            battle.initiated = false
+                           }
+                        })
                     })
                 }
             })
