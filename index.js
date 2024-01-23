@@ -1,6 +1,5 @@
 const canvas = document.querySelector('canvas');
 const c = canvas.getContext('2d');
-
 canvas.width = 1024;
 canvas.height = 576;
 
@@ -13,8 +12,6 @@ const battleZonesMap = []
 for (let i = 0; i < battleZonesData.length; i += 70) {
     battleZonesMap.push(battleZonesData.slice(i, 70 + i))
 }
-
-console.log(battleZonesMap)
 
 const boundaries = []
 const offset = {
@@ -52,8 +49,6 @@ battleZonesMap.forEach((row, i) => {
         })
 })
 
-console.log(battleZones)
-
 const image = new Image();
 image.src = './My Game Assets/Cozy Game.png';
 
@@ -90,7 +85,6 @@ const player = new Sprite({
         down: playerDownImage
     }
 })
-console.log(player)
 
 const background = new Sprite({
     position: {
@@ -156,7 +150,6 @@ function animate() {
     let moving = true
     player.moving = false
 
-    console.log(animationId)
     if (battle.initiated) return
     // activate a battle
     if (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed) {
@@ -180,6 +173,10 @@ function animate() {
                 console.log('activate battle')
                 //deactivate current animation loop
                 window.cancelAnimationFrame(animationId)
+
+                audio.Map.stop()
+                audio.initBattle.play()
+                audio.battle.play()
                 battle.initiated = true
                 gsap.to('#overlappingDiv', {
                     opacity: 1,
@@ -333,9 +330,14 @@ window.addEventListener('keyup', (e) => {
             keys.d.pressed = false
         break
     }
-    console.log(keys)
 });
 
-
+let clicked = false
+addEventListener('click', () => {
+    if (!clicked) {
+      audio.Map.play()
+      clicked = true
+    }
+})
 
 

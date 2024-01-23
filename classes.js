@@ -59,6 +59,8 @@ class Monster extends Sprite {
         gsap.to(this, {
             opacity: 0
         })
+        audio.battle.stop()
+        audio.victory.play()
     }
 
     attack({attack, recipient, renderedSprites}) {
@@ -74,6 +76,7 @@ class Monster extends Sprite {
 
         switch (attack.name) {
             case 'Hairball':
+                audio.initHairball.play()
                 const hairballImage = new Image()
                 hairballImage.src = './My Game Assets/spritesheet.png'
                 const hairball = new Sprite({
@@ -95,6 +98,7 @@ class Monster extends Sprite {
                     x: recipient.position.x,
                     y: recipient.position.y,
                     onComplete: () => {
+                        audio.hairballHit.play()
                         gsap.to(healthBar, {
                             width: recipient.health + '%',
                             })
@@ -119,6 +123,7 @@ class Monster extends Sprite {
 
             break
             case 'Pounce':
+                audio.initPounce.play()
             const tl = gsap.timeline()
 
             let movementDistance = 20
@@ -130,6 +135,7 @@ class Monster extends Sprite {
                 x: this.position.x + movementDistance * 2,
                 duration: 0.1,
                 onComplete: () => {
+                    audio.pounceHit.play()
                     gsap.to(healthBar, {
                     width: recipient.health + '%',
                     })
@@ -167,7 +173,7 @@ class Boundary {
     }
 
     draw() {
-        c.fillStyle = 'rgba(255, 0, 0, 0.5)'
+        c.fillStyle = 'rgba(255, 0, 0, 0)'
         c.fillRect(this.position.x, this.position.y, this.width, this.height)
     }
 }
