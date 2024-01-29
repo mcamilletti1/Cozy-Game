@@ -1,11 +1,12 @@
 <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Alice&family=Merriweather:ital@1&family=Press+Start+2P&family=Space+Mono&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Alice&family=Merriweather:ital@1&family=Press+Start+2P&family=Space+Mono&display=swap" rel="stylesheet"/>
 <style>
 
     * {
-        font-family: 'Press Start 2P', system-ui;
+        font-family: 'Press Start 2P', cursive;
+        box-sizing: border-box;
     }
 
     body {
@@ -18,19 +19,74 @@
 
     button {
         border: 0;
+        cursor: pointer;
         font-size: 16px;
     }
 
     button:hover {
         background-color: #ddd;
+    }
+
+    .popup {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 9999;
+    }
+    
+    .popup-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        text-align: center;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    }
+    
+    .popup h2 {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+    
+    .popup p {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+    
+    .popup button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
         cursor: pointer;
     }
+    
+    .popup button:hover {
+        background-color: #0056b3;
+    }
+    
 </style>
 </head>
 
 <div style="display: inline-block; position: relative;">
     <div id="overlappingDiv" style="background-color: black; position: absolute; top: 0; right: 0; bottom: 0; left: 0; opacity: 0; pointer-events: none; z-index: 10;"></div>
     <canvas></canvas>
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <h2>Instructions</h2>
+            <p>Use the W, A, S, and D keys to move the character.</p>
+            <p>Walk onto a battle patch to initiate a battle.</p>
+            <button id="startButton">Start</button>
+        </div>
+    </div>
     <div id="userInterface" style="display: none;">
     <div style="background-color: white; width: 250px; position: absolute; top: 50px; left: 50px; border: 4px black solid; padding: 12px;">
         <h1 style="font-size: 16px;">Mochi</h1>
@@ -62,7 +118,7 @@
 <script src="data/battleZones.js"></script>
 <script src="data/collisions.js"></script>
 <script src="data/attacks.js"></script>
-<script src="monsters.js"></script>
+<script src="data/monsters.js"></script>
 <script src="classes.js"></script>
 <script src="index.js"></script>
 <script src="battleScene.js"></script>

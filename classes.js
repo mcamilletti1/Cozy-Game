@@ -1,17 +1,18 @@
 class Sprite {
-    constructor({ position, image, frames = { max: 1, hold: 10 }, sprites, animate = false, rotation = 0}) {
+    constructor({ position, velocity, image, frames = { max: 1, hold: 10 }, sprites, animate = false, rotation = 0, scale = 1}) {
         this.position = position
         this.image = new Image()
         this.frames = {...frames, val: 0, elapsed: 0}
         this.image.onload = () => {
-            this.width = this.image.width / this.frames.max
-            this.height = this.image.height
+            this.width = this.image.width / this.frames.max * scale
+            this.height = this.image.height * scale
         }
         this.image.src = image.src
         this.animate = animate
         this.sprites = sprites
         this.opacity = 1
         this.rotation = rotation
+        this.scale = scale
     }
 
     draw() {
@@ -20,7 +21,25 @@ class Sprite {
         c.rotate(this.rotation)
         c.translate(-this.position.x - this.width / 2, -this.position.y - this.height / 2)
         c.globalAlpha = this.opacity
-        c.drawImage(this.image, this.frames.val * this.width, 0, this.image.width / this.frames.max, this.image.height, this.position.x, this.position.y, this.image.width / this.frames.max, this.image.height)
+
+        const crop = {
+            position: {
+                x: this.frames.val * (this.width / this.scale),
+                y: 0
+            },
+            width: this.image.width / this.frames.max,
+            height: this.image.height
+        }
+
+        const image = {
+            position: {
+                x: this.position.x,
+                y: this.position.y
+            },
+            width: this.image.width / this.frames.max,
+            height: this.image.height
+        }
+        c.drawImage(this.image, crop.position.x, crop.position.y, crop.width, crop.height, image.position.x, image.position.y, image.width * this.scale, image.height * this.scale)
         c.restore()
         if (!this.animate) return
         if (this.frames.max > 1) {
@@ -108,7 +127,6 @@ class Monster extends Sprite {
                             yoyo: true,
                             repeat: 5,
                             duration: 0.08,
-                            opacity: 0
                             }) 
         
                             gsap.to(recipient, {
@@ -144,7 +162,6 @@ class Monster extends Sprite {
                     yoyo: true,
                     repeat: 5,
                     duration: 0.08,
-                    opacity: 0
                     }) 
 
                     gsap.to(recipient, {
@@ -177,3 +194,31 @@ class Boundary {
         c.fillRect(this.position.x, this.position.y, this.width, this.height)
     }
 }
+
+class Character extends Sprite {
+    constructor({
+      position,
+      velocity,
+      image,
+      frames = { max: 1, hold: 10 },
+      sprites,
+      animate = false,
+      rotation = 0,
+      scale = 1,
+      dialogue = ['']
+    }) {
+      super({
+        position,
+        velocity,
+        image,
+        frames,
+        sprites,
+        animate,
+        rotation,
+        scale
+      })
+  
+      this.dialogue = dialogue
+      this.dialogueIndex = 0
+    }
+  }

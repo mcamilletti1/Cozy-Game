@@ -1,3 +1,16 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const popup = document.getElementById('popup');
+    const startButton = document.getElementById('startButton');
+
+    startButton.addEventListener('click', function() {
+        // Hide the popup when the "Start" button is clicked
+        popup.style.display = 'none';
+    });
+
+    // Show the popup when the page loads
+    popup.style.display = 'block';
+});
+
 const canvas = document.querySelector('canvas');
 const c = canvas.getContext('2d');
 canvas.width = 1024;
@@ -17,6 +30,15 @@ const boundaries = []
 const offset = {
     x: -695,
     y: -200
+}
+
+function rectangularCollision({ rectangle1, rectangle2 }) {
+  return (
+    rectangle1.position.x + rectangle1.width >= rectangle2.position.x &&
+    rectangle1.position.x <= rectangle2.position.x + rectangle2.width &&
+    rectangle1.position.y <= rectangle2.position.y + rectangle2.height &&
+    rectangle1.position.y + rectangle1.height >= rectangle2.position.y
+  )
 }
 
 collisionsMap.forEach((row, i) => {
@@ -120,37 +142,33 @@ const keys = {
 
 const movables = [background, ...boundaries, foreground, ...battleZones]
 
-function rectangularCollision({rectangle1, rectangle2}) {
-    return (
-        rectangle1.position.x + rectangle1.width >= rectangle2.position.x && 
-        rectangle1.position.x <= rectangle2.position.x + rectangle2.width && 
-        rectangle1.position.y <= rectangle2.position.y + rectangle2.height &&
-        rectangle1.position.y + rectangle1.height >= rectangle2.position.y
-        )
-}
+const renderables = [
+    background,
+    ...boundaries,
+    foreground,
+    ...battleZones,
+    player,
+    foreground
+]
 
 const battle = {
-   initiated: false 
-}
+    initiated: false 
+ }
 
 function animate() {
     const animationId = window.requestAnimationFrame(animate)
-    console.log(animationId)
-    background.draw()
-    boundaries.forEach((boundary) => {
-       boundary.draw()
+    renderables.forEach((renderable) => {
+        renderable.draw()
     })
-    battleZones.forEach(battleZone => {
-        battleZone.draw()
-    })
-    player.draw()
-    foreground.draw()
-
 
     let moving = true
-    player.moving = false
+    player.animate = false
 
-    if (battle.initiated) return
+    if (battle.initiated) {
+        return
+    }
+
+
     // activate a battle
     if (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed) {
         for (let i = 0; i < battleZones.length; i++) {
@@ -167,10 +185,9 @@ function animate() {
                 rectangle1: player,
                 rectangle2: battleZone
             }) &&
-            overlappingArea > player.width * player.height / 2
+            overlappingArea > (player.width * player.height) / 2
             && Math.random() < 0.01
             ) {
-                console.log('activate battle')
                 //deactivate current animation loop
                 window.cancelAnimationFrame(animationId)
 
@@ -216,13 +233,12 @@ function animate() {
                     y: boundary.position.y + 3
                 }}
             })) {
-                console.log('colliding')
                 moving = false
                 break
             }
         }
         if (moving)
-        movables.forEach(movable => {
+        movables.forEach((movable) => {
             movable.position.y += 3
         })
     } else if (keys.a.pressed && lastKey ===  'a') {
@@ -237,7 +253,6 @@ function animate() {
                     y: boundary.position.y
                 }}
             })) {
-                console.log('colliding')
                 moving = false
                 break
             }
@@ -247,7 +262,7 @@ function animate() {
             movable.position.x += 3
         })
     } else if (keys.s.pressed && lastKey === 's') {
-        player.moving = true
+        player.animate = true
         player.image = player.sprites.down
         for (let i = 0; i < boundaries.length; i++) {
             const boundary = boundaries[i]
@@ -258,17 +273,16 @@ function animate() {
                     y: boundary.position.y - 3
                 }}
             })) {
-                console.log('colliding')
                 moving = false
                 break
             }
         }
         if (moving)
-        movables.forEach(movable => {
+        movables.forEach((movable) => {
             movable.position.y -= 3
         })
     } else if (keys.d.pressed && lastKey === 'd') {
-        player.moving = true
+        player.animate = true
         player.image = player.sprites.right
         for (let i = 0; i < boundaries.length; i++) {
             const boundary = boundaries[i]
@@ -279,13 +293,12 @@ function animate() {
                     y: boundary.position.y
                 }}
             })) {
-                console.log('colliding')
                 moving = false
                 break
             }
         }
         if (moving)
-        movables.forEach(movable => {
+        movables.forEach((movable) => {
             movable.position.x -= 3
         })
     }
@@ -299,19 +312,19 @@ window.addEventListener('keydown', (e) => {
         case 'w':
             keys.w.pressed = true
             lastKey = 'w'
-        break
+            break
         case 'a':
             keys.a.pressed = true
             lastKey = 'a'
-        break
+            break
         case 's':
             keys.s.pressed = true
             lastKey = 's'
-        break
+            break
         case 'd':
             keys.d.pressed = true
             lastKey = 'd'
-        break
+            break
     }
 });
 
@@ -319,25 +332,27 @@ window.addEventListener('keyup', (e) => {
     switch (e.key) {
         case 'w':
             keys.w.pressed = false
-        break
+            break
         case 'a':
             keys.a.pressed = false
-        break
+            break
         case 's':
             keys.s.pressed = false
-        break
+            break
         case 'd':
             keys.d.pressed = false
-        break
+            break
     }
 });
 
 let clicked = false
 addEventListener('click', () => {
-    if (!clicked) {
-      audio.Map.play()
-      clicked = true
-    }
+  if (!clicked) {
+    audio.Map.play()
+    clicked = true
+  }
 })
+
+
 
 
