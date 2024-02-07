@@ -33,8 +33,8 @@ class Sprite {
 
         const image = {
             position: {
-                x: this.position.x,
-                y: this.position.y
+                x: Math.round(this.position.x),
+                y: Math.round(this.position.y)
             },
             width: this.image.width / this.frames.max,
             height: this.image.height

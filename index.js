@@ -3,11 +3,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const startButton = document.getElementById('startButton');
 
     startButton.addEventListener('click', function() {
-        // Hide the popup when the "Start" button is clicked
         popup.style.display = 'none';
     });
-
-    // Show the popup when the page loads
     popup.style.display = 'block';
 });
 
@@ -92,8 +89,8 @@ playerLeftImage.src = './My Game Assets/catLeft.png';
 
 const player = new Sprite({
     position: {
-        x: canvas.width / 2 - 107 / 4 / 2,
-        y: canvas.height / 2 - 26 / 2
+        x: canvas.width / 2 - 192 / 4 / 2,
+        y: canvas.height / 2 - 68 / 2
     },
     image: playerDownImage,
     frames: {
